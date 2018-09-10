@@ -1,0 +1,9 @@
+
+Compute means and variances of some continuous random variables using Simpson's numerical integration method.
+
+1. the average time after which ducks come back,
+2. the standard variation (mean squared variation) of the ducks’ return time,
+3. the time after which 50% of all of the ducks are back,
+4. the time after which 99% of all of the ducks are back,
+5. the percentage of ducks that come back after 1 minute,
+6. the percentage of ducks that come back after 2 minutes,
