@@ -1,1 +1,4 @@
+Computation of intregrals via several numerical methods..
 
+Compute Borwein integrals, using the rectangle method, the trapezoidal rule and the Simpson rule, and print both the
+In and the difference between this value and π/2.
