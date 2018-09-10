@@ -1,1 +1,10 @@
 
+Study of a very strange function, discontinuities everywhere...
+
+Given a matrix and the name of a function, your programm will apply the latter to the former, and print the result.
+
+USAGE
+  ./108trigo fun a0 a1 a2....
+DESCRIPTION
+  fun function to be applied, among at least "EXP", "COS", "SIN", "COSH" and "SINH"
+  ai  coeficients of the matrix
