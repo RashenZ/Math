@@ -1,0 +1,9 @@
+
+Estimate the probability that a random variable of a standard normal distribution is included into a given interval.
+Uses numerical integration.
+
+Code software so that he can calibrate
+his test, with 3 options:
+1. given μ and σ, export the values of the density function of the IQ (for any integer between 0 and 200) to be drawn by gnuplot,
+2. given μ, σ and one IQ value, print the percentage of people with an IQ inferior to this value,
+3. given μ, σ and two IQ values, print the percentage of people with an IQ in between those values.
