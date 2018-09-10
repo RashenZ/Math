@@ -1,0 +1,9 @@
+
+Binomial probability law and Poisson law.
+
+• computing the binomial coefficient (n k) given k and n (emphasizing the computation speed and stack optimiza-tion)
+
+• comparing binomial and Poisson distributions, given the average duration of calls, and printing
+  – the probabilities of getting n simultaneous calls (for n increasing from 0 to 50),
+  – the probability of an overload,
+  – the computation time.
