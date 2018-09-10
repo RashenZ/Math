@@ -1,0 +1,131 @@
+#!/usr/bin/python
+
+from __future__ import print_function
+import sys
+import math
+import time
+
+class hotline203:
+
+    def display_help(self):
+        print("USAGE")
+        print("\t./203hotline[n k|d]\n")
+        print("DESCRIPTION")
+        print("\tn   n value for the computation of (n/k)")
+        print("\tk   k value for the computation of (n/k)")
+        print("\td   average duration of calls(in seconds)")
+
+    def check_error(self):
+        if (len(sys.argv) < 2 or len(sys.argv) > 3):
+            hotline.display_help()
+            exit(84)
+        if (sys.argv[1] == "-h" or sys.argv[1] == "--help"):
+            hotline.display_help()
+        if (len(sys.argv) == 2):
+            try:
+                self.d = int(sys.argv[1])
+                if (self.d < 0):
+                    exit (84)
+            except Exception:
+                print("Error: invalid first argument")
+                exit(84)
+        elif (len(sys.argv) == 3):
+            try:
+                self.n = int(sys.argv[1])
+                self.k = int(sys.argv[2])
+                if (self.n < 0 or self.k < 0):
+                    exit (84)
+            except Exception:
+                print("Error: invalid argument")
+                exit(84)
+        
+    def facto(self, nb):
+        stock = nb
+        while nb > 1:
+            nb = nb - 1
+            stock = stock * nb
+        return (stock)
+    
+    def calcul_coeff_bin(self, n, k):
+        try:
+            
+            coeffBinom = hotline.facto(n) / (hotline.facto(k) * hotline.facto(n - k))
+        except:
+            return (0)
+        return (coeffBinom)
+
+
+    def poissonLaw(self, avg, ev):
+        res1 = pow(float(avg), float(ev))
+        res2 = float(math.exp(float(-avg)))
+        try:
+            result = float(res1 * res2) / float(hotline.facto(float(ev)))
+        except:
+            return (0)
+        return (result)
+
+    def calc_distri_poisson(self):
+        print("\nPoisson distribution:")
+        
+        k = self.d / 3600.0 * 3500 / 8
+        i = 0
+        overload = 0.0
+        interv = time.time()
+        while i < 51:
+            prob = hotline.poissonLaw(k, i)
+            if (i + 1) % 6 is not 0 and i != 50:
+                print(str(i) + " -> " + str(format(prob, ".3f")) + "\t", end="")
+            else:
+                print(str(i) + " -> " + str(format(prob, ".3f")))
+            if i <= 25:
+                overload = overload + prob
+            i = i + 1
+        overload = (1 - overload) * 100
+        compTime = (time.time() - interv) * 1000
+        print("overload: " + str(format(overload, ".1f")) + "%")
+        print("computation time: " + str(format(compTime, ".2f")) + "ms")
+
+        
+    def calc_distri_binom(self):
+        print("Binomial distribution:")
+        k = self.d / 3600.0 * 3500 / 8 / 3500
+        i = 0
+        overload = 0.0
+        interv = time.time()
+        while i < 51:
+            coeffBinom = hotline.calcul_coeff_bin(3500, i)
+            prob1 = pow(k, i)
+            prob2 = pow((1 - k), (3500 - i))
+            probTotal = coeffBinom * prob1 * prob2
+            if (i + 1) % 6 is not 0 and i != 50:
+                print(str(i) + " -> " + str(format(probTotal, ".3f")) + "\t", end="")
+            else:
+                print(str(i) + " -> " + str(format(probTotal, ".3f")))
+            if i <= 25:
+                overload = overload + probTotal
+            i = i + 1
+        overload = (1 - overload) * 100
+        print("overload: " + str(format(overload, ".1f")) + "%")
+        compTime = time.time() - interv
+        print("computation time: " + str(format(compTime, ".2f")) + "ms")
+        hotline.calc_distri_poisson()
+        
+        
+
+    def display_combination(self):
+        print(str(self.k) + "-combination of a " + str(self.n) + " set:")
+        if (self.k > self.n):
+            print(str(0))
+        elif (self.n == self.k):
+            print(str(1))
+        else:
+            coeffBinom = hotline.facto(self.n) / (hotline.facto(self.k) * hotline.facto(self.n - self.k))
+            print(str(coeffBinom))
+
+if __name__ == '__main__':
+    hotline = hotline203()
+    hotline.check_error()
+    if (len(sys.argv) == 3):
+        hotline.display_combination()
+    else:
+        hotline.calc_distri_binom()

@@ -1,0 +1,217 @@
+#!/usr/bin/python
+
+import sys
+import math
+
+class yams201:
+
+#
+# DEFAULT
+#
+    def start(self):
+        self.dice_nbr = 5
+        self.prob = float(1) / 6
+        
+    def help(self):
+        print("USAGE")
+        print("\t./201yams d1 d2 d3 d4 d5 c\n")
+        print("DESCRIPTION")
+        print("\td1  value of the first die (0 if not thrown)")
+        print("\td2  value of the second die (0 if not thrown)")
+        print("\td1  value of the third die (0 if not thrown)")
+        print("\td1  value of the fourth die (0 if not thrown)")
+        print("\td1  value of the fifth die (0 if not thrown)")
+        print("\tc   expected combination")
+
+#
+# HANDLE ERROR
+#
+    def checkError(self):
+        self.dice = []
+        try:
+            self.dice.append(int(sys.argv[1]))
+            self.dice.append(int(sys.argv[2]))
+            self.dice.append(int(sys.argv[3]))
+            self.dice.append(int(sys.argv[4]))
+            self.dice.append(int(sys.argv[5]))
+            self.combin = str(sys.argv[6])
+        except Exception:
+            print("Error: invalid arguments")
+            exit(84)
+    
+    def input_errors(self):
+        if len(sys.argv) < 2 or len(sys.argv) > 7:
+            yams.help()
+            exit(84)
+        if sys.argv[1] == "-h":
+            yams.help()
+            exit(0)
+        yams.checkError()
+        if 0 in self.dice:
+            if len(set(self.dice)) is not 1:
+                print("Error: All dice haven't been throw.")
+                exit(84)
+        if max(self.dice) > 6:
+            print("Error: A dice doesn't have more than 6 faces")
+            exit(84)
+
+#
+# INFORMATION
+#
+
+    def get_infos(self):
+        self.action = self.combin.split('_')[0]
+        if self.combin.count("_") is 1:
+            try:
+                self.k = int(self.combin[self.combin.find("_") + 1:])
+                self.count = self.dice.count(self.k)
+                if self.k > 6:
+                    print("Error: can't have more than 6")
+                    exit(84)
+                if self.k < 1:
+                    print("Error: can't have less than 1")
+                    exit(84)
+            except:
+                print("Syntax error on combination")
+                exit(84)
+        elif self.combin.count("_") is 2:
+            try:
+                self.stock = self.combin[self.combin.find("_") + 1:]
+                self.k2 = int(self.stock.split('_')[1])
+                self.count2 = self.dice.count(self.k2)
+                self.k1 = int(self.stock.split('_')[0])
+                self.count1 = self.dice.count(self.k1)
+            except:
+                print("Error: syntax Error on combination")
+                exit(84)
+            
+            if self.k1 > 6 or self.k2 > 6:
+                print("Error: can't have more than 6")
+                exit(84)
+            if self.k1 < 1 or self.k2 < 1:
+                print("Error: can't have less than 1")
+                exit(84)
+            if self.k1 is self.k2:
+                print("Error: can't have same number on combinaison")
+                exit(84)
+            if self.count1 > 3:
+                self.count1 = 3
+            if self.count2 > 2:
+                self.count2 = 2
+
+    def facto(self, nb):
+        stock = nb
+        while nb > 1:
+            nb = nb - 1
+            stock = stock * nb
+        return (stock)
+
+    def get_comb(self, k, n):
+        if n - k == 0:
+            return 1
+        return (self.facto(n) / (self.facto(k) * self.facto(n - k)))
+
+#
+# DIFFERENTS COMBINATIONS
+#
+
+    def classic(self, r, s):
+        try:
+            n = r - self.count
+        except:
+            exit(84)
+        self.dice_nbr = self.dice_nbr - self.count
+        if n <= 0:
+            print("chances to get a " + str(self.k) + " "+ s + ": 100.00%")
+            exit(0)
+        proba = 0
+        while n <= self.dice_nbr:
+            comb = self.get_comb(n, self.dice_nbr)
+            p1 = math.pow(self.prob, n)
+            p2 = math.pow((1 - self.prob), self.dice_nbr - n)
+            proba = proba + (comb * p1 * p2)
+            n = n + 1
+        proba = proba * 100
+        print("chances to get a " + str(self.k) + " " + s + ": " + str(format(proba, '.2f')) + "%")
+
+    def straight(self):
+        try:
+            if self.k < 5:
+                print("Error: need a least a straight of 5")
+                exit(84)
+        except:
+            exit(84)
+        if 2 in self.dice:
+            self.dice_nbr = self.dice_nbr - 1
+        if 3 in self.dice:
+            self.dice_nbr = self.dice_nbr - 1
+        if 4 in self.dice:
+            self.dice_nbr = self.dice_nbr - 1
+        if 5 in self.dice:
+            self.dice_nbr = self.dice_nbr - 1
+        if self.k == 5:
+            if 1 in self.dice:
+                self.dice_nbr = self.dice_nbr - 1
+        else:
+            if 6 in self.dice:
+                self.dice_nbr = self.dice_nbr - 1
+        if self.dice_nbr <= 0:
+            print("chances to get a " + str(self.k) + " straight: 100.00%")
+            exit(0)
+        factor = self.facto(self.dice_nbr)
+        proba = float(factor) / math.pow(6, self.dice_nbr)
+        proba = proba * 100
+        print("chances to get a " + str(self.k) + " straight: " + str(format(proba, '.2f')) + "%")
+
+    def full(self):
+        try:
+            self.k1 = self.k1
+            self.k2 = self.k2
+        except:
+            print("Error: cannot calculate chances of full without 2 arguments")
+            exit(84)
+        n = 3 - self.count1
+        self.dice_nbr = self.dice_nbr - self.count1 - self.count2
+        if n <= 0 :
+            if self.dice_nbr > 0:
+                n2 = 2 - self.count2;
+                comb = self.get_comb(n2, self.dice_nbr)
+                proba = comb / math.pow(6, self.dice_nbr)
+                proba = proba * 100
+                print("chances to get a " + str(self.k1) + " full of " + str(self.k2) + ": " + str(format(proba, '.2f')) + "%")
+                exit(0)
+            else:
+                print("chances to get a " + str(self.k1) + " full of " + str(self.k2) + ": 100.00%")
+                exit(0)
+        comb = self.get_comb(n, self.dice_nbr)
+        proba = comb / math.pow(6, self.dice_nbr)
+        proba = proba * 100
+        print("chances to get a " + str(self.k1) + " full of " + str(self.k2) + ": " + str(format(proba, '.2f')) + "%")
+        
+#
+# MENU
+#
+
+    def menu(self):
+        if self.action == "pair":
+            self.classic(2, "pair")
+        elif self.action == "three":
+            self.classic(3, "three-of-a-kind")
+        elif self.action == "four":
+            self.classic(4, "four-of-a-kind")
+        elif self.action == "full":
+            self.full()
+        elif self.action == "straight":
+            self.straight()
+        elif self.action == "yams" or self.action == "yahtzee":
+            self.classic(5, "yams")
+        else:
+            print("invalid command")
+            self.help()
+
+if __name__ == '__main__':
+    yams = yams201()
+    yams.input_errors()
+    yams.start()
+    yams.get_infos()
+    yams.menu()

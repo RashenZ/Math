@@ -1,0 +1,114 @@
+#!/usr/bin/python
+
+import sys
+import math
+
+class ducks204:
+
+    def display_help(self):
+        print("USAGE")
+        print("\t./204ducks a\n")
+        print("DESCRIPTION")
+        print("\ta    constant")
+
+    def check_error(self):
+        if len(sys.argv) != 2:
+            self.display_help()
+            exit(84)
+        if sys.argv[1] == "-h" or sys.argv[1] == "--help":
+            self.display_help()
+            exit(0)
+        try:
+            self.a = float(sys.argv[1])
+            if self.a < 0 or self.a > 2.5:
+                print("need to be between 0 and 2.5")
+                exit(84)
+        except:
+            print("Error: invalid argument")
+            exit(84)
+    
+    def calc_prob_density(self, a, t):
+        res1 = a * math.exp(-t)
+        res2 = (4 - 3* a) * math.exp(-2 * t)
+        res3 = (2 * a - 4) * math.exp(-4 * t)
+        result = res1 + res2 + res3
+        return (result)
+
+    def calc_prob_density2(self, a, t):
+        return (-a * math.exp(-t) - (4 - 3 * a) / 2 * math.exp(-2 * t) - (2 * a - 4) / 4 * math.exp(-4 * t));
+
+    def ducks_back(self, mini, a):
+        totalProba = 0
+        time = 0
+        t = 0
+        while (1):
+            totalProba = totalProba + (self.calc_prob_density(self.a, t))
+            if totalProba >= mini:
+                break;
+            t = t + 0.01
+        t = t - 0.01
+#        if mini is 99:
+ #           t = t - 0.02
+        time = t + 1.0 / 60
+        minute = time * 60 // 60
+        seconds = (time * 60) % 60
+        seconds = seconds // 1
+        print("time after which " + str(mini) + "% of the ducks come back: " + str(format(minute, ".0f")) + "m " + str(format(seconds, ".0f")) + "s")
+
+    def ducks_minutes(self, limit, a):
+        totalProba = 0
+        t = 0
+        minute = 0
+
+        while minute < limit:
+            totalProba = totalProba + (self.calc_prob_density(self.a, t))
+            time = t + 1.0 / 60
+            minute = time * 60 // 60
+            seconds = (time * 60) % 60
+            seconds = seconds // 1
+            t = t + 0.01
+        t = t + 0.7;
+        totalProba = totalProba + (self.calc_prob_density(self.a, t))
+        return (totalProba)
+        
+    
+    def ducks(self):
+        totalProba = 0
+        averageReturn = 0
+        t = 0
+        while totalProba < 99.9999:
+            totalProba = totalProba + (self.calc_prob_density(self.a, t) / 10)
+            averageReturn = averageReturn + (self.calc_prob_density(self.a, t) / 10) * t
+            t = t + 0.001
+        averageReturn = averageReturn / 99.9999
+        averageReturn = averageReturn + 1.0 / 60
+        minute = averageReturn * 60 // 60
+        seconds = (averageReturn * 60) % 60
+        seconds = seconds // 1
+        print("average return time: " + str(format(minute, ".0f")) + "m "+ str(format(seconds, ".0f")) + "s")
+        sd = 0
+        while t > 0:
+            sd = sd + math.pow((t - averageReturn), 2) * (self.calc_prob_density(self.a, t) / 10)
+            t = t - 0.001
+        sd = sd / 99.9999
+        sd = pow(sd, 0.5)
+        print("standard deviation: " + str(format(sd, ".3f")))
+        self.ducks_back(50, self.a)
+        self.ducks_back(99, self.a)
+        
+#        percent = self.ducks_minutes(1, self.a)
+#        print("percentage of ducks back after 1 minute: " + str(format(percent, ".1f")) + "%")
+#        percent = self.ducks_minutes(2, self.a)
+#        print("percentage of ducks back after 2 minutes: " + str(format(percent, ".1f")) + "%")
+
+        percent = (self.calc_prob_density2(self.a, 1) - self.calc_prob_density2(self.a, 0)) * 100
+        print("percentage of ducks back after 1 minute: " + str(format(percent, ".1f")) + "%")
+        percent = (self.calc_prob_density2(self.a, 2) - self.calc_prob_density2(self.a, 0)) * 100
+        print("percentage of ducks back after 2 minutes: " + str(format(percent, ".1f")) + "%")
+        
+
+if __name__ == '__main__':
+    ducks = ducks204()
+    ducks.check_error()
+    ducks.ducks()
+    
